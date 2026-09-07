@@ -1,0 +1,5892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>अन्नRakshak | Smart Farming</title>
+
+<style>
+/* =========================================================
+   अन्नRakshak
+   BROWN + OFF WHITE + OLIVE GREEN THEME
+   Backend / functionality unchanged
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f7f3ec;
+    color:#3e3025;
+    overflow-x:hidden;
+    transition:.4s;
+}
+
+button{
+    font-family:inherit;
+    cursor:pointer;
+}
+
+:root{
+    --brown:#765033;
+    --dark-brown:#432b1c;
+    --deep-brown:#2e1d13;
+    --brown-light:#a67c56;
+
+    --olive:#68734a;
+    --olive-light:#8b9565;
+    --olive-pale:#e9eadc;
+
+    --cream:#f7f3ec;
+    --off-white:#fffdf9;
+    --white:#ffffff;
+
+    --text:#3e3025;
+    --muted:#756b61;
+
+    --border:#e2d8ca;
+
+    --danger:#b64b3c;
+    --warn:#b47a25;
+    --info:#52728b;
+}
+
+
+/* =========================================================
+   CINEMATIC INTRO
+========================================================= */
+
+#intro{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100vh;
+    z-index:99999;
+    overflow:hidden;
+    background:#21170f;
+    animation:introDisappear 1.5s ease 6.5s forwards;
+}
+
+.sky{
+    position:absolute;
+    inset:0;
+
+    background:
+        radial-gradient(
+            circle at 75% 35%,
+            rgba(221,184,111,.65),
+            transparent 16%
+        ),
+        linear-gradient(
+            to bottom,
+            #241b18 0%,
+            #504033 32%,
+            #967052 65%,
+            #d2aa72 100%
+        );
+
+    animation:skyLight 5s ease forwards;
+}
+
+.sun{
+    position:absolute;
+
+    width:150px;
+    height:150px;
+
+    border-radius:50%;
+
+    background:#e3bd72;
+
+    box-shadow:
+        0 0 40px #d9ae61,
+        0 0 100px rgba(219,175,91,.55);
+
+    right:18%;
+    top:45%;
+
+    transform:translateY(300px);
+
+    animation:sunRise 4s ease forwards;
+}
+
+.sunGlow{
+    position:absolute;
+
+    width:400px;
+    height:400px;
+
+    border-radius:50%;
+
+    right:10%;
+    top:20%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(220,181,102,.25),
+            transparent 65%
+        );
+
+    animation:glowAppear 3.5s ease forwards;
+}
+
+.introTitle{
+    position:absolute;
+    inset:0;
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    color:#fffdf7;
+
+    opacity:0;
+
+    animation:titleAppear 1.5s ease 2.5s forwards;
+}
+
+.introTitle small{
+    letter-spacing:4px;
+    color:#ded6c5;
+    font-size:13px;
+}
+
+.introTitle h1{
+    font-size:70px;
+    margin:10px 0;
+    letter-spacing:2px;
+}
+
+.introTitle h1 span{
+    color:#aab07b;
+}
+
+.introTitle p{
+    letter-spacing:3px;
+    font-size:14px;
+    color:#e1d8c8;
+}
+
+.introTitle .line{
+    width:0;
+    height:2px;
+
+    background:#aab07b;
+
+    margin-top:18px;
+
+    animation:lineGrow 1.5s ease 3.5s forwards;
+}
+
+@keyframes skyLight{
+    to{
+        filter:brightness(1.15);
+    }
+}
+
+@keyframes sunRise{
+    to{
+        transform:translateY(0);
+    }
+}
+
+@keyframes glowAppear{
+    to{
+        opacity:1;
+    }
+}
+
+@keyframes titleAppear{
+    0%{
+        opacity:0;
+        transform:scale(.8);
+        filter:blur(20px);
+    }
+
+    100%{
+        opacity:1;
+        transform:scale(1);
+        filter:blur(0);
+    }
+}
+
+@keyframes lineGrow{
+    to{
+        width:300px;
+    }
+}
+
+@keyframes introDisappear{
+    0%{
+        opacity:1;
+    }
+
+    100%{
+        opacity:0;
+        visibility:hidden;
+        pointer-events:none;
+    }
+}
+
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar{
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+
+    z-index:900;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:18px 8%;
+
+    background:rgba(255,253,249,.90);
+
+    backdrop-filter:blur(12px);
+
+    border-bottom:1px solid var(--border);
+}
+
+.logo{
+    font-size:22px;
+
+    font-weight:bold;
+
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+
+    color:var(--dark-brown);
+}
+
+.logo span{
+    color:var(--olive);
+}
+
+.logoIcon{
+    font-size:22px;
+}
+
+.navlinks{
+    display:flex;
+    gap:28px;
+}
+
+.navlinks a{
+    text-decoration:none;
+
+    color:var(--text);
+
+    font-size:15px;
+
+    font-weight:600;
+
+    transition:.3s;
+}
+
+.navlinks a:hover{
+    color:var(--olive);
+}
+
+.navActions{
+    display:flex;
+    align-items:center;
+
+    gap:14px;
+}
+
+.themeBtn{
+    border:none;
+
+    background:#ebe8da;
+
+    color:var(--dark-brown);
+
+    width:38px;
+    height:38px;
+
+    border-radius:50%;
+
+    font-size:16px;
+
+    transition:.3s;
+}
+
+.themeBtn:hover{
+    transform:rotate(15deg) scale(1.05);
+}
+
+.statusDot{
+    width:9px;
+    height:9px;
+
+    border-radius:50%;
+
+    background:#b64b3c;
+
+    display:inline-block;
+
+    box-shadow:
+        0 0 0 3px rgba(182,75,60,.12);
+}
+
+.statusDot.online{
+    background:var(--olive);
+
+    box-shadow:
+        0 0 0 3px rgba(104,115,74,.15);
+}
+
+.statusWrap{
+    display:flex;
+    align-items:center;
+
+    gap:6px;
+
+    font-size:12px;
+
+    color:var(--muted);
+}
+
+.signBtn{
+    padding:10px 20px;
+
+    border:none;
+
+    border-radius:30px;
+
+    background:var(--brown);
+
+    color:#fff;
+
+    font-weight:600;
+
+    transition:.3s;
+}
+
+.signBtn:hover{
+    background:var(--dark-brown);
+
+    transform:translateY(-2px);
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+    min-height:100vh;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 8%;
+    padding-top:100px;
+
+    gap:40px;
+
+    background:
+        radial-gradient(
+            circle at 10% 30%,
+            rgba(139,149,101,.12),
+            transparent 28%
+        ),
+        #f7f3ec;
+}
+
+.badge{
+    display:inline-block;
+
+    background:#e9eadc;
+
+    color:#5d663e;
+
+    padding:8px 16px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    margin-bottom:20px;
+
+    border:1px solid #daddc5;
+}
+
+.heroText h2{
+    font-size:56px;
+
+    line-height:1.15;
+
+    margin-bottom:20px;
+
+    color:var(--dark-brown);
+}
+
+.heroText h2 span{
+    color:var(--olive);
+}
+
+.heroText p{
+    max-width:480px;
+
+    color:var(--muted);
+
+    font-size:16px;
+
+    line-height:1.6;
+
+    margin-bottom:30px;
+}
+
+.heroButtons{
+    display:flex;
+    gap:16px;
+}
+
+.primary{
+    padding:15px 25px;
+
+    border:none;
+
+    border-radius:30px;
+
+    background:var(--brown);
+
+    color:#fff;
+
+    font-weight:600;
+
+    font-size:15px;
+
+    transition:.3s;
+}
+
+.primary:hover{
+    background:var(--dark-brown);
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 12px 25px rgba(67,43,28,.20);
+}
+
+.secondary{
+    padding:15px 25px;
+
+    border:2px solid var(--olive);
+
+    border-radius:30px;
+
+    background:transparent;
+
+    color:var(--olive);
+
+    font-weight:600;
+
+    font-size:15px;
+
+    transition:.3s;
+}
+
+.secondary:hover{
+    background:var(--olive-pale);
+
+    transform:translateY(-3px);
+}
+
+.heroVisual{
+    width:380px;
+    height:380px;
+
+    flex-shrink:0;
+
+    position:relative;
+}
+
+.glassCard{
+    width:100%;
+    height:100%;
+
+    border-radius:40px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fffdf9,
+            #e6e5d5
+        );
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    position:relative;
+
+    border:1px solid #ddd5c7;
+
+    box-shadow:
+        0 30px 60px rgba(72,49,32,.14);
+}
+
+.glassCard::before{
+    content:"";
+
+    position:absolute;
+
+    width:230px;
+    height:230px;
+
+    border-radius:50%;
+
+    border:1px dashed #aeb28a;
+
+    animation:rotate 15s linear infinite;
+}
+
+.bigPlant{
+    font-size:120px;
+
+    animation:floatPlant 4s ease-in-out infinite;
+}
+
+@keyframes floatPlant{
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-18px);
+    }
+}
+
+
+/* =========================================================
+   FEATURES
+========================================================= */
+
+.sectionTitle{
+    text-align:center;
+
+    max-width:600px;
+
+    margin:0 auto 50px;
+}
+
+.sectionTitle span{
+    color:var(--olive);
+
+    font-weight:700;
+
+    font-size:13px;
+
+    letter-spacing:1px;
+}
+
+.sectionTitle h2{
+    font-size:36px;
+
+    margin:12px 0;
+
+    color:var(--dark-brown);
+}
+
+.sectionTitle p{
+    color:var(--muted);
+}
+
+.features{
+    padding:100px 8%;
+
+    background:#fffdf9;
+}
+
+.cards{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:30px;
+}
+
+.card{
+    padding:35px;
+
+    border-radius:25px;
+
+    background:#faf7f1;
+
+    border:1px solid var(--border);
+
+    transition:.4s;
+
+    box-shadow:
+        0 8px 25px rgba(67,43,28,.04);
+}
+
+.card:hover{
+    transform:translateY(-10px);
+
+    border-color:#cfc9ad;
+
+    box-shadow:
+        0 20px 40px rgba(67,43,28,.12);
+}
+
+.cardIcon{
+    font-size:34px;
+
+    margin-bottom:16px;
+
+    width:62px;
+    height:62px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:18px;
+
+    background:#e9eadc;
+}
+
+.card h3{
+    margin-bottom:10px;
+
+    color:var(--dark-brown);
+}
+
+.card p{
+    color:var(--muted);
+
+    font-size:14px;
+
+    line-height:1.6;
+}
+
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+.about{
+    padding:80px 8%;
+
+    text-align:center;
+
+    background:#ebe8da;
+}
+
+.about h2{
+    font-size:32px;
+
+    margin-bottom:16px;
+
+    color:var(--dark-brown);
+}
+
+.about p{
+    max-width:650px;
+
+    margin:0 auto;
+
+    color:#71675d;
+
+    line-height:1.7;
+}
+
+
+/* =========================================================
+   CTA
+========================================================= */
+
+.cta{
+    padding:70px 8%;
+
+    text-align:center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #432b1c,
+            #765033
+        );
+
+    color:#fff;
+}
+
+.cta h2{
+    font-size:32px;
+
+    margin-bottom:10px;
+}
+
+.cta p{
+    color:#ded4c5;
+
+    margin-bottom:26px;
+}
+
+.cta button{
+    padding:15px 30px;
+
+    border:none;
+
+    border-radius:30px;
+
+    background:#aeb27d;
+
+    color:#302519;
+
+    font-weight:700;
+
+    font-size:15px;
+
+    transition:.3s;
+}
+
+.cta button:hover{
+    background:#c0c494;
+
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.18);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer{
+    padding:30px 8%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    border-top:1px solid var(--border);
+
+    background:#fffdf9;
+}
+
+
+/* =========================================================
+   LOGIN MODAL
+========================================================= */
+
+.loginOverlay{
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(46,29,19,.62);
+
+    backdrop-filter:blur(8px);
+
+    z-index:9500;
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+}
+
+.loginBox{
+    background:#fffdf9;
+
+    width:380px;
+
+    max-width:90%;
+
+    padding:40px 34px;
+
+    border-radius:24px;
+
+    position:relative;
+
+    text-align:center;
+
+    border:1px solid var(--border);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.25);
+
+    animation:modalIn .35s ease;
+}
+
+@keyframes modalIn{
+    from{
+        opacity:0;
+
+        transform:
+            scale(.9)
+            translateY(30px);
+    }
+
+    to{
+        opacity:1;
+
+        transform:
+            scale(1)
+            translateY(0);
+    }
+}
+
+.loginBox .close{
+    position:absolute;
+
+    top:14px;
+    right:18px;
+
+    background:none;
+
+    border:none;
+
+    font-size:22px;
+
+    color:var(--muted);
+}
+
+.loginIcon{
+    font-size:40px;
+
+    margin-bottom:6px;
+}
+
+.loginBox h2{
+    margin-bottom:6px;
+
+    color:var(--dark-brown);
+}
+
+.loginBox p{
+    color:var(--muted);
+
+    font-size:14px;
+
+    margin-bottom:22px;
+}
+
+.loginBox label{
+    display:block;
+
+    text-align:left;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    margin:12px 0 6px;
+
+    color:var(--dark-brown);
+}
+
+.loginBox input{
+    width:100%;
+
+    padding:12px 14px;
+
+    border-radius:12px;
+
+    border:1px solid #d9cdbd;
+
+    font-size:14px;
+
+    background:#faf7f1;
+
+    outline:none;
+}
+
+.loginBox input:focus{
+    border-color:var(--olive);
+
+    box-shadow:
+        0 0 0 3px rgba(104,115,74,.12);
+}
+
+.loginSubmit{
+    width:100%;
+
+    margin-top:20px;
+
+    padding:13px;
+
+    border:none;
+
+    border-radius:30px;
+
+    background:var(--brown);
+
+    color:#fff;
+
+    font-weight:700;
+
+    font-size:15px;
+
+    transition:.3s;
+}
+
+.loginSubmit:hover{
+    background:var(--dark-brown);
+}
+
+
+/* =========================================================
+   APP DASHBOARD
+========================================================= */
+
+.appSection{
+    padding:90px 8% 100px;
+
+    background:#f2efe6;
+}
+
+.appIntro{
+    text-align:center;
+
+    max-width:650px;
+
+    margin:0 auto 40px;
+}
+
+.appIntro h2{
+    color:var(--dark-brown);
+}
+
+.tabNav{
+    display:flex;
+
+    justify-content:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:40px;
+}
+
+.tabBtn{
+    padding:11px 22px;
+
+    border-radius:30px;
+
+    border:1px solid #d6d3bd;
+
+    background:#fffdf9;
+
+    color:var(--text);
+
+    font-weight:600;
+
+    font-size:14px;
+
+    transition:.3s;
+}
+
+.tabBtn:hover{
+    border-color:var(--olive);
+}
+
+.tabBtn.active{
+    background:var(--olive);
+
+    color:#fff;
+
+    border-color:var(--olive);
+}
+
+.tabPanel{
+    display:none;
+
+    max-width:900px;
+
+    margin:0 auto;
+}
+
+.tabPanel.active{
+    display:block;
+
+    animation:fadeUp .35s ease;
+}
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.panelCard{
+    background:#fffdf9;
+
+    border-radius:24px;
+
+    padding:36px;
+
+    border:1px solid var(--border);
+
+    box-shadow:
+        0 10px 30px rgba(67,43,28,.06);
+
+    margin-bottom:26px;
+}
+
+.panelCard h3{
+    margin-bottom:4px;
+
+    color:var(--dark-brown);
+}
+
+.panelCard .sub{
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-bottom:22px;
+}
+
+.formGrid{
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:18px;
+}
+
+.formGroup{
+    margin-bottom:16px;
+}
+
+.formGroup label{
+    display:block;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    margin-bottom:6px;
+
+    color:var(--dark-brown);
+}
+
+.formGroup select,
+.formGroup input[type=text],
+.formGroup input[type=number],
+.formGroup textarea{
+    width:100%;
+
+    padding:12px 14px;
+
+    border-radius:12px;
+
+    border:1px solid #d9cdbd;
+
+    font-size:14px;
+
+    background:#fcfaf5;
+
+    color:var(--text);
+
+    font-family:inherit;
+
+    outline:none;
+}
+
+.formGroup select:focus,
+.formGroup input:focus,
+.formGroup textarea:focus{
+    border-color:var(--olive);
+
+    box-shadow:
+        0 0 0 3px rgba(104,115,74,.10);
+}
+
+.formGroup textarea{
+    resize:vertical;
+
+    min-height:90px;
+}
+
+
+/* =========================================================
+   UPLOAD
+========================================================= */
+
+.uploadBox{
+    border:2px dashed #c8c7ad;
+
+    border-radius:16px;
+
+    padding:22px;
+
+    text-align:center;
+
+    background:#faf8f2;
+
+    margin-bottom:16px;
+}
+
+.uploadBox label{
+    display:inline-block;
+
+    padding:10px 20px;
+
+    border-radius:30px;
+
+    background:var(--brown);
+
+    color:#fff;
+
+    font-weight:600;
+
+    font-size:14px;
+
+    margin-bottom:6px;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.uploadBox label:hover{
+    background:var(--dark-brown);
+
+    transform:translateY(-2px);
+}
+
+.uploadBox input[type=file]{
+    display:none;
+}
+
+.uploadHint{
+    font-size:12px;
+
+    color:var(--muted);
+
+    margin-top:6px;
+}
+
+.previewBox{
+    display:none;
+
+    margin-top:14px;
+
+    text-align:center;
+}
+
+.previewBox img{
+    max-width:220px;
+
+    max-height:220px;
+
+    border-radius:14px;
+
+    border:1px solid var(--border);
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.btnRow{
+    display:flex;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+}
+
+.btn{
+    padding:13px 26px;
+
+    border-radius:30px;
+
+    border:none;
+
+    font-weight:700;
+
+    font-size:14px;
+}
+
+.btn.primaryBtn{
+    background:var(--brown);
+
+    color:#fff;
+
+    transition:.3s;
+}
+
+.btn.primaryBtn:hover{
+    background:var(--dark-brown);
+
+    transform:translateY(-2px);
+}
+
+.btn.primaryBtn:disabled{
+    background:#b8aa9b;
+
+    cursor:not-allowed;
+
+    transform:none;
+}
+
+.btn.ghostBtn{
+    background:#e9eadc;
+
+    color:#4f5839;
+
+    transition:.3s;
+}
+
+.btn.ghostBtn:hover{
+    background:#dfe2cd;
+}
+
+
+/* =========================================================
+   SPINNER
+========================================================= */
+
+.spinner{
+    width:18px;
+
+    height:18px;
+
+    border-radius:50%;
+
+    border:3px solid rgba(255,255,255,.4);
+
+    border-top-color:#fff;
+
+    display:inline-block;
+
+    vertical-align:middle;
+
+    margin-right:8px;
+
+    animation:rotate .7s linear infinite;
+}
+
+@keyframes rotate{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.errorBox{
+    background:#f9e9e5;
+
+    border:1px solid #e6bcb5;
+
+    color:var(--danger);
+
+    padding:14px 18px;
+
+    border-radius:12px;
+
+    font-size:14px;
+
+    margin-top:16px;
+
+    display:none;
+}
+
+
+/* =========================================================
+   RESULT CARD
+========================================================= */
+
+.resultCard{
+    display:none;
+
+    margin-top:24px;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    border:1px solid var(--border);
+
+    background:#fffdf9;
+}
+
+.resultTop{
+    padding:20px 24px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.resultThumb{
+    width:64px;
+
+    height:64px;
+
+    min-width:64px;
+
+    object-fit:cover;
+
+    border-radius:12px;
+
+    border:1px solid var(--border);
+
+    background:var(--olive-pale);
+
+    display:none;
+}
+
+.resultTopInfo{
+    flex:1;
+}
+
+.cropTag{
+    display:inline-block;
+
+    background:var(--olive-pale);
+
+    color:#4f5839;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    letter-spacing:.04em;
+
+    text-transform:uppercase;
+
+    padding:3px 10px;
+
+    border-radius:20px;
+
+    margin-bottom:6px;
+}
+
+.resultTop h4{
+    font-size:19px;
+
+    color:var(--text);
+}
+
+.resultTop .statusLabel{
+    font-size:13px;
+
+    color:var(--muted);
+
+    margin-top:2px;
+}
+
+.resultBadge{
+    font-size:26px;
+
+    width:46px;
+
+    height:46px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:var(--olive-pale);
+}
+
+.resultTop.healthy .resultBadge{
+    background:#dcecd6;
+}
+
+.resultTop.attention .resultBadge{
+    background:#f6dcd6;
+}
+
+.resultTop.uncertain .resultBadge{
+    background:#dbe6ee;
+}
+
+.resultBody{
+    padding:24px;
+
+    background:#fffdf9;
+}
+
+.confLabel{
+    font-weight:700;
+
+    font-size:13px;
+
+    color:var(--text);
+}
+
+.confidenceRow{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:8px;
+}
+
+.confidenceBar{
+    height:8px;
+
+    background:#e7e6d9;
+
+    border-radius:10px;
+
+    overflow:hidden;
+
+    margin-bottom:18px;
+}
+
+.confidenceFill{
+    height:100%;
+
+    background:var(--olive);
+
+    border-radius:10px;
+}
+
+.severityRow{
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:20px;
+}
+
+.severityChip{
+    display:inline-block;
+
+    padding:4px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    background:#f6dcd6;
+
+    color:var(--danger);
+}
+
+.severityChip.low{
+    background:#dcecd6;
+
+    color:var(--olive);
+}
+
+.severityChip.unknown{
+    background:#dbe6ee;
+
+    color:var(--info);
+}
+
+.resultGrid{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:14px;
+
+    margin-bottom:18px;
+}
+
+.resultBlock{
+    background:var(--olive-pale);
+
+    border-radius:14px;
+
+    padding:16px 18px;
+}
+
+.resultBlockHead{
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:8px;
+}
+
+.resultBlockHead h5{
+    font-size:14px;
+
+    color:#3f4a2c;
+}
+
+.blockIcon{
+    font-size:16px;
+
+    line-height:1;
+}
+
+.resultBlock p{
+    font-size:14px;
+
+    line-height:1.6;
+
+    color:var(--text);
+}
+
+.altChips{
+    display:flex;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+}
+
+.chip{
+    background:#ebe9dc;
+
+    border-radius:20px;
+
+    padding:6px 12px;
+
+    font-size:12px;
+
+    color:#4f5839;
+}
+
+.disclaimerBox{
+    display:flex;
+
+    gap:10px;
+
+    align-items:flex-start;
+
+    background:#f2efe6;
+
+    border-radius:14px;
+
+    padding:14px 16px;
+}
+
+.disclaimerBox p{
+    font-size:12.5px;
+
+    line-height:1.6;
+
+    color:var(--muted);
+}
+
+@media(max-width:640px){
+
+    .resultGrid{
+        grid-template-columns:1fr;
+    }
+
+    .resultTop{
+        flex-wrap:wrap;
+    }
+
+}
+
+
+/* =========================================================
+   WEATHER
+========================================================= */
+
+.weatherGrid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:14px;
+
+    margin-bottom:22px;
+}
+
+.weatherStat{
+    background:#f8f6ef;
+
+    border-radius:14px;
+
+    padding:16px;
+
+    text-align:center;
+
+    border:1px solid var(--border);
+}
+
+.weatherStat .val{
+    font-size:22px;
+
+    font-weight:700;
+
+    color:var(--dark-brown);
+}
+
+.weatherStat .lab{
+    font-size:12px;
+
+    color:var(--muted);
+
+    margin-top:4px;
+}
+
+.forecastRow{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:14px;
+}
+
+.forecastCard{
+    background:#faf8f2;
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    padding:16px;
+
+    font-size:13px;
+}
+
+.forecastCard .date{
+    font-weight:700;
+
+    margin-bottom:8px;
+
+    color:var(--dark-brown);
+}
+
+.riskCard{
+    border-radius:16px;
+
+    padding:20px;
+
+    margin-top:20px;
+
+    border:1px solid var(--border);
+}
+
+.riskCard.low{
+    background:#e9eddd;
+
+    border-color:#c5cfaa;
+}
+
+.riskCard.medium{
+    background:#f8f0df;
+
+    border-color:#dfc896;
+}
+
+.riskCard.high{
+    background:#f9e9e5;
+
+    border-color:#e6bcb5;
+}
+
+.riskLevel{
+    font-weight:800;
+
+    font-size:16px;
+
+    margin-bottom:6px;
+
+    color:var(--dark-brown);
+}
+
+.riskCard ul{
+    margin:10px 0 0 18px;
+
+    font-size:13px;
+
+    line-height:1.6;
+}
+
+.otherRisks{
+    margin-top:14px;
+}
+
+.otherRisks summary{
+    cursor:pointer;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    color:var(--olive);
+}
+
+
+/* =========================================================
+   TICKETS
+========================================================= */
+
+.ticketConfirm{
+    display:none;
+
+    margin-top:20px;
+
+    padding:20px;
+
+    border-radius:16px;
+
+    background:#e9eddd;
+
+    border:1px solid #c5cfaa;
+}
+
+.statusBadge{
+    display:inline-block;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    color:#fff;
+}
+
+.statusBadge.pending{
+    background:var(--info);
+}
+
+.statusBadge.urgent{
+    background:var(--danger);
+}
+
+.statusBadge.underreview{
+    background:var(--warn);
+}
+
+.statusBadge.resolved{
+    background:var(--olive);
+}
+
+.statusBadge.other{
+    background:#766b60;
+}
+
+.ticketList{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    margin-top:20px;
+}
+
+.ticketItem{
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    padding:16px 18px;
+
+    background:#faf8f2;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.ticketItem:hover{
+    border-color:#c6c6aa;
+}
+
+.ticketItem .row1{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:6px;
+}
+
+.ticketItem .meta{
+    font-size:12px;
+
+    color:var(--muted);
+}
+
+.ticketDetail{
+    display:none;
+
+    margin-top:16px;
+
+    padding:18px;
+
+    border-radius:14px;
+
+    background:#fffdf9;
+
+    border:1px dashed #c8c7ad;
+}
+
+.filterRow{
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr 1fr auto;
+
+    gap:12px;
+
+    align-items:end;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:900px){
+
+    .navlinks{
+        display:none;
+    }
+
+    .hero{
+        flex-direction:column;
+
+        text-align:center;
+
+        padding-top:130px;
+    }
+
+    .hero p{
+        margin-left:auto;
+        margin-right:auto;
+    }
+
+    .heroButtons{
+        justify-content:center;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+
+    .heroVisual{
+        width:280px;
+        height:280px;
+    }
+
+    .formGrid{
+        grid-template-columns:1fr;
+    }
+
+    .weatherGrid{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .forecastRow{
+        grid-template-columns:1fr;
+    }
+
+    .filterRow{
+        grid-template-columns:1fr;
+    }
+
+    footer{
+        flex-direction:column;
+
+        gap:10px;
+
+        text-align:center;
+    }
+}
+
+
+@media(max-width:600px){
+
+    .navbar{
+        padding:16px 5%;
+    }
+
+    .logo{
+        font-size:19px;
+    }
+
+    .signBtn{
+        padding:9px 15px;
+    }
+
+    .statusWrap{
+        display:none;
+    }
+
+    .hero{
+        padding-left:6%;
+        padding-right:6%;
+    }
+
+    .heroText h2{
+        font-size:43px;
+    }
+
+    .heroButtons{
+        flex-direction:column;
+    }
+
+    .primary,
+    .secondary{
+        width:100%;
+    }
+
+    .introTitle h1{
+        font-size:55px;
+    }
+
+    .introTitle p{
+        font-size:11px;
+    }
+
+    .features{
+        padding:75px 6%;
+    }
+
+    .sectionTitle h2{
+        font-size:32px;
+    }
+
+    .about h2{
+        font-size:30px;
+    }
+
+    .appSection{
+        padding:75px 5%;
+    }
+
+    .panelCard{
+        padding:25px 20px;
+    }
+
+    .weatherGrid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .cta{
+        padding:55px 6%;
+    }
+
+    .cta h2{
+        font-size:28px;
+    }
+}
+
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+body.dark{
+    background:#18120d;
+
+    color:#eee5d9;
+}
+
+body.dark .navbar{
+    background:rgba(24,18,13,.92);
+
+    border-color:#33261c;
+}
+
+body.dark .logo{
+    color:#f0e5d8;
+}
+
+body.dark .navlinks a{
+    color:#d2c4b5;
+}
+
+body.dark .themeBtn{
+    background:#30251c;
+
+    color:#eee5d9;
+}
+
+body.dark .hero{
+    background:
+        radial-gradient(
+            circle at 10% 30%,
+            rgba(139,149,101,.08),
+            transparent 28%
+        ),
+        #18120d;
+}
+
+body.dark .heroText h2{
+    color:#f2e7da;
+}
+
+body.dark .heroText p{
+    color:#b9aa9b;
+}
+
+body.dark .features{
+    background:#20170f;
+}
+
+body.dark .sectionTitle h2{
+    color:#f0e4d7;
+}
+
+body.dark .sectionTitle p{
+    color:#b8aa9c;
+}
+
+body.dark .card{
+    background:#261c14;
+
+    border-color:#3b2c20;
+}
+
+body.dark .card h3{
+    color:#f0e5d9;
+}
+
+body.dark .card p{
+    color:#b9aa9c;
+}
+
+body.dark .cardIcon{
+    background:#33372a;
+}
+
+body.dark .about{
+    background:#272116;
+}
+
+body.dark .about h2{
+    color:#f0e5d8;
+}
+
+body.dark .about p{
+    color:#b9aa9c;
+}
+
+body.dark .appSection{
+    background:#1d1711;
+}
+
+body.dark .panelCard{
+    background:#261c14;
+
+    border-color:#3b2c20;
+}
+
+body.dark .panelCard h3{
+    color:#f0e5d8;
+}
+
+body.dark .formGroup label{
+    color:#eaded0;
+}
+
+body.dark .formGroup select,
+body.dark .formGroup input,
+body.dark .formGroup textarea{
+    background:#1d1711;
+
+    border-color:#473528;
+
+    color:#eee5d9;
+}
+
+body.dark .uploadBox{
+    background:#1d1711;
+
+    border-color:#514632;
+}
+
+body.dark .tabBtn{
+    background:#261c14;
+
+    border-color:#49382a;
+
+    color:#eee5d9;
+}
+
+body.dark .tabBtn.active{
+    background:var(--olive);
+
+    border-color:var(--olive);
+}
+
+body.dark .weatherStat,
+body.dark .forecastCard,
+body.dark .ticketItem{
+    background:#21180f;
+
+    border-color:#3b2c20;
+}
+
+body.dark .weatherStat .val,
+body.dark .forecastCard .date{
+    color:#eee5d9;
+}
+
+body.dark .ticketDetail,
+body.dark .resultBody,
+body.dark .resultCard{
+    background:#261c14;
+
+    border-color:#49382a;
+}
+
+body.dark .resultBody{
+    color:#eee5d9;
+}
+
+body.dark .resultTop{
+    border-color:#49382a;
+}
+
+body.dark .confidenceBar{
+    background:#3a3329;
+}
+
+body.dark .chip{
+    background:#34372a;
+
+    color:#e0e3ca;
+}
+
+body.dark .resultBlock,
+body.dark .resultBadge,
+body.dark .cropTag{
+    background:#34372a;
+}
+
+body.dark .resultBlockHead h5{
+    color:#e0e3ca;
+}
+
+body.dark .resultBlock p{
+    color:#eee5d9;
+}
+
+body.dark .disclaimerBox{
+    background:#2c241a;
+}
+
+body.dark .disclaimerBox p{
+    color:#c9bfae;
+}
+
+body.dark .resultThumb{
+    background:#34372a;
+
+    border-color:#49382a;
+}
+
+body.dark .loginBox{
+    background:#261c14;
+
+    border-color:#49382a;
+
+    color:#eee5d9;
+}
+
+body.dark .loginBox h2{
+    color:#f0e5d8;
+}
+
+body.dark .loginBox input{
+    background:#1d1711;
+
+    border-color:#49382a;
+
+    color:#eee5d9;
+}
+
+body.dark footer{
+    background:#18120d;
+
+    border-color:#33261c;
+
+    color:#aa9b8d;
+}
+
+body.dark .glassCard{
+    background:
+        linear-gradient(
+            145deg,
+            #30271e,
+            #34382a
+        );
+
+    border-color:#4a4035;
+}
+
+body.dark .glassCard::before{
+    border-color:#69724b;
+}
+
+body.dark .appIntro h2{
+    color:#f0e5d8;
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- =========================================================
+     FILE:// PROTOCOL WARNING
+     Shown only if someone double-clicks index.html instead of
+     serving it via start.bat / start.sh (localhost:3000).
+========================================================= -->
+
+<div
+    id="fileProtocolWarning"
+    style="display:none; position:fixed; top:0; left:0; right:0;
+           z-index:99999; background:#c0392b; color:#fff;
+           padding:14px 18px; font-family:sans-serif; font-size:14px;
+           text-align:center;">
+
+    ⚠️ You opened this file directly, so it can't reach the backend
+    (browser security blocks it). Please run
+    <strong>start.bat</strong> (Windows) or <strong>start.sh</strong>
+    (Mac/Linux) inside the <strong>frontend</strong> folder instead,
+    then open <strong>http://localhost:3000</strong> in your browser.
+
+</div>
+
+<script>
+
+    if(window.location.protocol === "file:"){
+
+        document.getElementById(
+            "fileProtocolWarning"
+        ).style.display = "block";
+
+    }
+
+</script>
+
+
+<!-- =========================================================
+     CINEMATIC INTRO
+========================================================= -->
+
+<div id="intro">
+
+    <div class="sky"></div>
+
+    <div class="sunGlow"></div>
+
+    <div class="sun"></div>
+
+    <div class="introTitle">
+
+        <small>SMART INDIA HACKATHON 2026</small>
+
+        <h1>
+            <span>अन्न</span>Rakshak
+        </h1>
+
+        <p>
+            WHERE TECHNOLOGY MEETS THE SOIL
+        </p>
+
+        <div class="line"></div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     MAIN WEBSITE
+========================================================= -->
+
+<div id="website">
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <span class="logoIcon">🌱</span>
+
+            <span style="color:#432b1c;">
+                अन्न
+            </span>Rakshak
+
+        </div>
+
+
+        <div class="navlinks">
+
+            <a href="#home">
+                Home
+            </a>
+
+            <a href="#features">
+                Features
+            </a>
+
+            <a href="#app">
+                Diagnosis
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+        </div>
+
+
+        <div class="navActions">
+
+            <div class="statusWrap">
+
+                <span
+                    class="statusDot"
+                    id="statusDot">
+                </span>
+
+                <span id="statusText">
+                    Checking backend…
+                </span>
+
+            </div>
+
+
+            <button
+                class="themeBtn"
+                id="themeBtn"
+                onclick="toggleTheme()">
+
+                🌙
+
+            </button>
+
+
+            <button
+                class="signBtn"
+                onclick="openLogin()">
+
+                Sign In
+
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section
+        class="hero"
+        id="home">
+
+        <div class="heroText">
+
+            <div class="badge">
+
+                🌾 AI POWERED AGRICULTURE
+
+            </div>
+
+
+            <h2>
+
+                Smarter Farming.
+                <br>
+
+                <span>
+                    Healthier Crops.
+                </span>
+
+            </h2>
+
+
+            <p>
+
+                अन्नRakshak combines artificial intelligence,
+                crop intelligence and smart technology to help
+                farmers detect crop problems earlier and make
+                better decisions.
+
+            </p>
+
+
+            <div class="heroButtons">
+
+                <button
+                    class="primary"
+                    onclick="scrollFeatures()">
+
+                    Explore Technology →
+
+                </button>
+
+
+                <button
+                    class="secondary"
+                    onclick="openLogin()">
+
+                    Get Started
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="heroVisual">
+
+            <div class="glassCard">
+
+                <div class="bigPlant">
+                    🌱
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FEATURES
+    ====================================================== -->
+
+    <section
+        class="features"
+        id="features">
+
+        <div class="sectionTitle">
+
+            <span>
+                OUR TECHNOLOGY
+            </span>
+
+            <h2>
+                Built For The Future Of Farming
+            </h2>
+
+            <p>
+                Intelligent solutions designed to make crop
+                protection faster, smarter and more accessible.
+            </p>
+
+        </div>
+
+
+        <div class="cards">
+
+
+            <div class="card">
+
+                <div class="cardIcon">
+                    🔬
+                </div>
+
+                <h3>
+                    Disease Detection
+                </h3>
+
+                <p>
+                    Upload a leaf photo and get an instant AI
+                    diagnosis with a localized treatment plan
+                    in your language.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="cardIcon">
+                    🌦️
+                </div>
+
+                <h3>
+                    Weather & Pest Risk
+                </h3>
+
+                <p>
+                    Live weather data turned into a clear
+                    disease and pest risk forecast for your crop.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="cardIcon">
+                    🧑‍🌾
+                </div>
+
+                <h3>
+                    Expert Support
+                </h3>
+
+                <p>
+                    Raise a ticket with your photo and problem
+                    description — serious cases are auto-flagged
+                    for urgent review.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ABOUT
+    ====================================================== -->
+
+    <section
+        class="about"
+        id="about">
+
+        <h2>
+            Technology With A Purpose 🌱
+        </h2>
+
+        <p>
+
+            अन्नRakshak aims to bridge the gap between modern
+            artificial intelligence and traditional agriculture
+            by creating accessible technology that puts farmers
+            and healthier crops first. Advisory is available in
+            English, Hindi, Marathi, Punjabi, Tamil, Telugu and
+            Bengali.
+
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         CTA
+    ====================================================== -->
+
+    <section class="cta">
+
+        <h2>
+            Ready To Grow Smarter?
+        </h2>
+
+        <p>
+            Step into the future of intelligent agriculture.
+        </p>
+
+        <button onclick="goToApp()">
+
+            Start With अन्नRakshak →
+
+        </button>
+
+    </section>
+
+
+    <!-- =====================================================
+         APP DASHBOARD
+         BACKEND CODE / ENDPOINTS UNCHANGED
+    ====================================================== -->
+
+    <section
+        class="appSection"
+        id="app">
+
+        <div class="appIntro">
+
+            <span
+                style="
+                color:var(--olive);
+                font-weight:700;
+                font-size:13px;
+                ">
+
+                YOUR DASHBOARD
+
+            </span>
+
+
+            <h2
+                style="
+                font-size:32px;
+                margin:12px 0;
+                ">
+
+                Crop Protection Tools
+
+            </h2>
+
+
+            <p
+                style="
+                color:var(--muted);
+                ">
+
+                Live results from your
+                अन्नRakshak backend running at
+                <code id="apiBaseLabel"></code>.
+
+            </p>
+
+        </div>
+
+
+        <div class="tabNav">
+
+            <button
+                class="tabBtn active"
+                data-tab="diagnosis"
+                onclick="switchTab('diagnosis')">
+
+                🔬 Disease Diagnosis
+
+            </button>
+
+
+            <button
+                class="tabBtn"
+                data-tab="weather"
+                onclick="switchTab('weather')">
+
+                🌦️ Weather & Risk
+
+            </button>
+
+
+            <button
+                class="tabBtn"
+                data-tab="tickets"
+                onclick="switchTab('tickets')">
+
+                🧑‍🌾 Support Tickets
+
+            </button>
+
+
+            <button
+                class="tabBtn"
+                data-tab="expert"
+                onclick="switchTab('expert')">
+
+                🗂️ Expert View
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             DIAGNOSIS
+        ================================================== -->
+
+        <div
+            class="tabPanel active"
+            id="panel-diagnosis">
+
+            <div class="panelCard">
+
+                <h3>
+                    Analyze a crop photo
+                </h3>
+
+                <p class="sub">
+
+                    Uses the /disease/detect endpoint —
+                    AI model, blur check and multilingual advisory.
+
+                </p>
+
+
+                <form id="diagnosisForm">
+
+
+                    <div class="formGrid">
+
+
+                        <div class="formGroup">
+
+                            <label for="d_crop">
+                                Crop
+                            </label>
+
+                            <select
+                                id="d_crop"
+                                required>
+
+                                <option value="">
+                                    -- Select Crop --
+                                </option>
+
+                                <option value="tomato">
+                                    Tomato
+                                </option>
+
+                                <option value="potato">
+                                    Potato
+                                </option>
+
+                                <option value="corn">
+                                    Corn / Maize
+                                </option>
+
+                                <option value="wheat">
+                                    Wheat
+                                </option>
+
+                                <option value="rice">
+                                    Rice
+                                </option>
+
+                                <option value="pepper">
+                                    Pepper
+                                </option>
+
+                                <option value="apple">
+                                    Apple
+                                </option>
+
+                                <option value="grape">
+                                    Grape
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="formGroup">
+
+                            <label for="d_location">
+                                Location
+                            </label>
+
+                            <input
+                                type="text"
+                                id="d_location"
+                                placeholder="e.g. Jaipur, Rajasthan"
+                                required>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="formGroup">
+
+                        <label for="d_lang">
+                            Advisory language
+                        </label>
+
+                        <select id="d_lang">
+
+                            <option value="en">
+                                English
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="uploadBox">
+
+                        <label for="d_image">
+
+                            📷 Upload Leaf Photo
+
+                        </label>
+
+                        <input
+                            type="file"
+                            id="d_image"
+                            accept="image/png, image/jpeg"
+                            required>
+
+
+                        <div class="uploadHint">
+
+                            JPG or PNG, under 5MB.
+                            A clear, in-focus leaf photo works best.
+
+                        </div>
+
+
+                        <div
+                            class="previewBox"
+                            id="d_previewBox">
+
+                            <img
+                                id="d_preview"
+                                alt="Preview">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="btnRow">
+
+                        <button
+                            type="submit"
+                            class="btn primaryBtn"
+                            id="d_submitBtn">
+
+                            Analyze Photo
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn ghostBtn"
+                            onclick="resetDiagnosis()">
+
+                            Reset
+
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="errorBox"
+                        id="d_error">
+                    </div>
+
+                </form>
+
+
+                <div
+                    class="resultCard"
+                    id="d_result">
+
+
+                    <div
+                        class="resultTop"
+                        id="d_resultHead">
+
+                        <img
+                            class="resultThumb"
+                            id="d_thumb"
+                            alt="Analyzed leaf">
+
+
+                        <div class="resultTopInfo">
+
+                            <span
+                                class="cropTag"
+                                id="d_cropTag">
+                            </span>
+
+                            <h4 id="d_resultTitle"></h4>
+
+                            <div
+                                class="statusLabel"
+                                id="d_resultStatus">
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="resultBadge"
+                            id="d_resultIcon">
+
+                            🌱
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="resultBody">
+
+
+                        <div class="confidenceRow">
+
+                            <span class="confLabel">
+                                Confidence Score
+                            </span>
+
+                            <strong id="d_confText"></strong>
+
+                        </div>
+
+
+                        <div class="confidenceBar">
+
+                            <div
+                                class="confidenceFill"
+                                id="d_confFill">
+                            </div>
+
+                        </div>
+
+
+                        <div class="severityRow">
+
+                            <span class="confLabel">
+                                Severity Level:
+                            </span>
+
+                            <span
+                                class="severityChip"
+                                id="d_severity">
+                            </span>
+
+                        </div>
+
+
+                        <div class="resultGrid">
+
+                            <div class="resultBlock">
+
+                                <div class="resultBlockHead">
+                                    <span class="blockIcon">🩺</span>
+                                    <h5>Diagnosis</h5>
+                                </div>
+
+                                <p id="d_message"></p>
+
+                            </div>
+
+
+                            <div class="resultBlock">
+
+                                <div class="resultBlockHead">
+                                    <span class="blockIcon">🌿</span>
+                                    <h5>Recommended Advice</h5>
+                                </div>
+
+                                <p id="d_advice"></p>
+
+                            </div>
+
+
+                            <div
+                                class="resultBlock"
+                                id="d_treatmentWrap"
+                                style="display:none;">
+
+                                <div class="resultBlockHead">
+                                    <span class="blockIcon">🧪</span>
+                                    <h5>Treatment / Dosage</h5>
+                                </div>
+
+                                <p id="d_treatment"></p>
+
+                            </div>
+
+
+                            <div
+                                class="resultBlock"
+                                id="d_altsWrap"
+                                style="display:none;">
+
+                                <div class="resultBlockHead">
+                                    <span class="blockIcon">🔍</span>
+                                    <h5>Other Possibilities Considered</h5>
+                                </div>
+
+                                <div
+                                    class="altChips"
+                                    id="d_alts">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="disclaimerBox">
+
+                            <span class="blockIcon">ℹ️</span>
+
+                            <p>
+                                This is an AI-generated estimate. Treatment
+                                type and dosage must be verified against the
+                                product label, local agricultural guidelines,
+                                and a certified expert before use.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             WEATHER
+        ================================================== -->
+
+        <div
+            class="tabPanel"
+            id="panel-weather">
+
+            <div class="panelCard">
+
+                <h3>
+                    Weather & pest/disease risk
+                </h3>
+
+                <p class="sub">
+
+                    Uses /weather and /weather/risk —
+                    live Open-Meteo data, no API key required.
+
+                </p>
+
+
+                <div class="formGrid">
+
+
+                    <div class="formGroup">
+
+                        <label for="w_location">
+                            Location name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="w_location"
+                            placeholder="e.g. Jaipur"
+                            value="Jaipur">
+
+                    </div>
+
+
+                    <div class="formGroup">
+
+                        <label for="w_crop">
+                            Crop (for risk check)
+                        </label>
+
+                        <select id="w_crop">
+
+                            <option value="tomato">
+                                Tomato
+                            </option>
+
+                            <option value="potato">
+                                Potato
+                            </option>
+
+                            <option value="rice">
+                                Rice
+                            </option>
+
+                            <option value="wheat">
+                                Wheat
+                            </option>
+
+                            <option value="maize">
+                                Maize / Corn
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="btnRow">
+
+                    <button
+                        type="button"
+                        class="btn primaryBtn"
+                        id="w_fetchBtn"
+                        onclick="fetchWeather()">
+
+                        Get Weather & Risk
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn ghostBtn"
+                        onclick="useMyLocation()">
+
+                        📍 Use My Location
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="errorBox"
+                    id="w_error">
+                </div>
+
+
+                <div
+                    id="w_results"
+                    style="display:none; margin-top:24px;">
+
+                    <div
+                        class="weatherGrid"
+                        id="w_currentGrid">
+                    </div>
+
+
+                    <h4 style="margin-bottom:10px;">
+
+                        3-Day Forecast
+
+                    </h4>
+
+
+                    <div
+                        class="forecastRow"
+                        id="w_forecast">
+                    </div>
+
+
+                    <div
+                        class="riskCard"
+                        id="w_riskCard">
+
+                        <div
+                            class="riskLevel"
+                            id="w_riskLevel">
+                        </div>
+
+                        <div id="w_riskReason"></div>
+
+                        <div
+                            id="w_riskAlert"
+                            style="
+                            margin-top:8px;
+                            font-weight:600;
+                            ">
+                        </div>
+
+
+                        <div
+                            id="w_riskThreatsWrap"
+                            style="display:none;">
+
+                            <span
+                                class="label"
+                                style="
+                                display:block;
+                                margin-top:10px;
+                                ">
+
+                                Threats
+
+                            </span>
+
+                            <ul id="w_riskThreats"></ul>
+
+                        </div>
+
+
+                        <div
+                            id="w_riskRecsWrap"
+                            style="display:none;">
+
+                            <span
+                                class="label"
+                                style="
+                                display:block;
+                                margin-top:10px;
+                                ">
+
+                                Recommendations
+
+                            </span>
+
+                            <ul id="w_riskRecs"></ul>
+
+                        </div>
+
+
+                        <details
+                            class="otherRisks"
+                            id="w_otherRisksWrap"
+                            style="display:none;">
+
+                            <summary>
+
+                                View risk for other threats to this crop
+
+                            </summary>
+
+                            <div
+                                id="w_otherRisks"
+                                style="margin-top:10px;">
+                            </div>
+
+                        </details>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             TICKETS
+        ================================================== -->
+
+        <div
+            class="tabPanel"
+            id="panel-tickets">
+
+            <div class="panelCard">
+
+                <h3>
+                    Raise an expert support ticket
+                </h3>
+
+                <p class="sub">
+
+                    Uses POST /tickets —
+                    high-confidence AI pre-screens are auto-flagged as urgent.
+
+                </p>
+
+
+                <form id="ticketForm">
+
+
+                    <div class="formGrid">
+
+
+                        <div class="formGroup">
+
+                            <label for="t_crop">
+                                Crop
+                            </label>
+
+                            <select
+                                id="t_crop"
+                                required>
+
+                                <option value="">
+                                    -- Select Crop --
+                                </option>
+
+                                <option value="tomato">
+                                    Tomato
+                                </option>
+
+                                <option value="potato">
+                                    Potato
+                                </option>
+
+                                <option value="corn">
+                                    Corn / Maize
+                                </option>
+
+                                <option value="wheat">
+                                    Wheat
+                                </option>
+
+                                <option value="rice">
+                                    Rice
+                                </option>
+
+                                <option value="pepper">
+                                    Pepper
+                                </option>
+
+                                <option value="apple">
+                                    Apple
+                                </option>
+
+                                <option value="grape">
+                                    Grape
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="formGroup">
+
+                            <label for="t_location">
+                                Location
+                            </label>
+
+                            <input
+                                type="text"
+                                id="t_location"
+                                placeholder="e.g. Jaipur, Rajasthan"
+                                required>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="formGroup">
+
+                        <label for="t_lang">
+                            Language
+                        </label>
+
+                        <select id="t_lang">
+
+                            <option value="en">
+                                English
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="formGroup">
+
+                        <label for="t_desc">
+                            Describe the problem
+                        </label>
+
+                        <textarea
+                            id="t_desc"
+                            placeholder="What are you noticing on the plant?"
+                            required>
+                        </textarea>
+
+                    </div>
+
+
+                    <div class="uploadBox">
+
+                        <label for="t_image">
+
+                            📷 Upload Photo
+
+                        </label>
+
+                        <input
+                            type="file"
+                            id="t_image"
+                            accept="image/png, image/jpeg"
+                            required>
+
+
+                        <div
+                            class="previewBox"
+                            id="t_previewBox">
+
+                            <img
+                                id="t_preview"
+                                alt="Preview">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="btnRow">
+
+                        <button
+                            type="submit"
+                            class="btn primaryBtn"
+                            id="t_submitBtn">
+
+                            Submit Ticket
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn ghostBtn"
+                            onclick="resetTicketForm()">
+
+                            Reset
+
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="errorBox"
+                        id="t_error">
+                    </div>
+
+                </form>
+
+
+                <div
+                    class="ticketConfirm"
+                    id="t_confirm">
+
+                    <strong>
+                        Ticket submitted ✅
+                    </strong>
+
+                    <p
+                        style="
+                        margin-top:8px;
+                        font-size:14px;
+                        ">
+
+                        Ticket #
+                        <span id="t_confirmId"></span>
+                        —
+                        <span id="t_confirmBadge"></span>
+
+                    </p>
+
+                    <p
+                        style="
+                        margin-top:6px;
+                        font-size:13px;
+                        color:var(--muted);
+                        ">
+
+                        AI pre-screen:
+                        <span id="t_confirmAI"></span>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="panelCard">
+
+                <h3>
+                    Track a ticket
+                </h3>
+
+                <p class="sub">
+
+                    Look up a ticket by ID to see its
+                    current status and any expert response.
+
+                </p>
+
+
+                <div
+                    class="btnRow"
+                    style="margin-bottom:10px;">
+
+                    <input
+                        type="text"
+                        id="track_id"
+                        placeholder="Ticket ID"
+                        style="
+                        max-width:160px;
+                        padding:12px 14px;
+                        border-radius:12px;
+                        border:1px solid #d9cdbd;
+                        background:#fcfaf5;
+                        ">
+
+
+                    <button
+                        type="button"
+                        class="btn primaryBtn"
+                        onclick="trackTicket()">
+
+                        Look Up
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="errorBox"
+                    id="track_error">
+                </div>
+
+
+                <div
+                    class="ticketDetail"
+                    id="track_detail">
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             EXPERT PANEL
+        ================================================== -->
+
+        <div
+            class="tabPanel"
+            id="panel-expert">
+
+            <div class="panelCard">
+
+                <h3>
+                    Expert dashboard
+                </h3>
+
+                <p class="sub">
+
+                    Uses GET /tickets (filterable)
+                    and PUT /tickets/{id} —
+                    for agriculture officers.
+
+                </p>
+
+
+                <div class="filterRow">
+
+
+                    <div class="formGroup">
+
+                        <label for="e_status">
+                            Status
+                        </label>
+
+                        <select id="e_status">
+
+                            <option value="">
+                                Any
+                            </option>
+
+                            <option value="Pending Review">
+                                Pending Review
+                            </option>
+
+                            <option value="Needs Expert Attention">
+                                Needs Expert Attention
+                            </option>
+
+                            <option value="Under Review">
+                                Under Review
+                            </option>
+
+                            <option value="Resolved">
+                                Resolved
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="formGroup">
+
+                        <label for="e_crop">
+                            Crop
+                        </label>
+
+                        <input
+                            type="text"
+                            id="e_crop"
+                            placeholder="e.g. tomato">
+
+                    </div>
+
+
+                    <div class="formGroup">
+
+                        <label for="e_location">
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            id="e_location"
+                            placeholder="e.g. Jaipur">
+
+                    </div>
+
+
+                    <div class="formGroup">
+
+                        <button
+                            type="button"
+                            class="btn primaryBtn"
+                            onclick="loadExpertTickets()">
+
+                            Load Tickets
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="errorBox"
+                    id="e_error">
+                </div>
+
+
+                <div
+                    class="ticketList"
+                    id="e_list">
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        <div>
+            © 2026 अन्नRakshak
+        </div>
+
+        <div>
+            Smart India Hackathon
+        </div>
+
+    </footer>
+
+</div>
+
+
+<!-- =========================================================
+     LOGIN POPUP
+========================================================= -->
+
+<div
+    class="loginOverlay"
+    id="loginOverlay"
+    onclick="closeOutside(event)">
+
+    <div class="loginBox">
+
+        <button
+            class="close"
+            onclick="closeLogin()">
+
+            ×
+
+        </button>
+
+
+        <div class="loginIcon">
+            🌱
+        </div>
+
+
+        <h2>
+            Welcome Back
+        </h2>
+
+
+        <p>
+            Sign in to access your
+            अन्नRakshak dashboard.
+        </p>
+
+
+        <form onsubmit="loginUser(event)">
+
+
+            <label>
+                Email Address
+            </label>
+
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                required>
+
+
+            <label>
+                Password
+            </label>
+
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                required>
+
+
+            <button
+                class="loginSubmit"
+                type="submit">
+
+                Sign In →
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     BACKEND JAVASCRIPT
+     KEPT FUNCTIONALLY SAME
+========================================================= -->
+
+<script>
+
+/* =========================================================
+   CONFIG
+========================================================== */
+
+const API_BASE = "http://127.0.0.1:8000";
+
+document.getElementById("apiBaseLabel").textContent = API_BASE;
+
+const LANGUAGE_NAMES = {
+    en:"English"
+};
+
+
+/* =========================================================
+   DARK MODE
+========================================================== */
+
+function toggleTheme(){
+
+    document.body.classList.toggle("dark");
+
+    const btn =
+        document.getElementById("themeBtn");
+
+    btn.innerHTML =
+        document.body.classList.contains("dark")
+        ? "☀️"
+        : "🌙";
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================== */
+
+function openLogin(){
+
+    document.getElementById(
+        "loginOverlay"
+    ).style.display = "flex";
+
+}
+
+function closeLogin(){
+
+    document.getElementById(
+        "loginOverlay"
+    ).style.display = "none";
+
+}
+
+function closeOutside(event){
+
+    if(
+        event.target.id ===
+        "loginOverlay"
+    ){
+
+        closeLogin();
+
+    }
+
+}
+
+function loginUser(event){
+
+    event.preventDefault();
+
+    const email =
+        document.getElementById("email").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    if(email && password){
+
+        closeLogin();
+
+        goToApp();
+
+    }
+
+}
+
+function goToApp(){
+
+    document.getElementById(
+        "app"
+    ).scrollIntoView({
+        behavior:"smooth"
+    });
+
+}
+
+function scrollFeatures(){
+
+    document.getElementById(
+        "features"
+    ).scrollIntoView({
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =========================================================
+   INTRO
+========================================================== */
+
+setTimeout(function(){
+
+    const intro =
+        document.getElementById("intro");
+
+    if(intro){
+
+        intro.remove();
+
+    }
+
+},8000);
+
+
+/* =========================================================
+   BACKEND HEALTH CHECK
+========================================================== */
+
+async function checkHealth(){
+
+    const dot =
+        document.getElementById("statusDot");
+
+    const text =
+        document.getElementById("statusText");
+
+    try{
+
+        const res =
+            await fetch(
+                `${API_BASE}/health`
+            );
+
+        if(!res.ok)
+            throw new Error("bad status");
+
+        dot.classList.add("online");
+
+        text.textContent =
+            "Backend online";
+
+    }
+
+    catch(err){
+
+        dot.classList.remove("online");
+
+        text.textContent =
+            "Backend unreachable";
+
+    }
+
+}
+
+
+/* =========================================================
+   LANGUAGES
+========================================================== */
+
+async function loadLanguages(){
+
+    try{
+
+        const res =
+            await fetch(
+                `${API_BASE}/languages`
+            );
+
+        if(!res.ok)
+            return;
+
+        const data =
+            await res.json();
+
+        const selects = [
+
+            document.getElementById("d_lang"),
+
+            document.getElementById("t_lang")
+
+        ];
+
+        selects.forEach(sel => {
+
+            sel.innerHTML = "";
+
+        });
+
+        data.languages.forEach(lang => {
+
+            LANGUAGE_NAMES[
+                lang.code
+            ] = lang.name;
+
+            selects.forEach(sel => {
+
+                const opt =
+                    document.createElement(
+                        "option"
+                    );
+
+                opt.value =
+                    lang.code;
+
+                opt.textContent =
+                    lang.name;
+
+                sel.appendChild(opt);
+
+            });
+
+        });
+
+    }
+
+    catch(err){
+
+        /* keep English fallback */
+
+    }
+
+}
+
+
+/* =========================================================
+   TABS
+========================================================== */
+
+function switchTab(name){
+
+    document.querySelectorAll(
+        ".tabBtn"
+    ).forEach(b => {
+
+        b.classList.toggle(
+            "active",
+            b.dataset.tab === name
+        );
+
+    });
+
+    document.querySelectorAll(
+        ".tabPanel"
+    ).forEach(p => {
+
+        p.classList.toggle(
+            "active",
+            p.id === `panel-${name}`
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   IMAGE PREVIEW
+========================================================== */
+
+function wireImagePreview(
+    inputId,
+    boxId,
+    imgId
+){
+
+    const input =
+        document.getElementById(
+            inputId
+        );
+
+    input.addEventListener(
+        "change",
+        function(){
+
+            const file =
+                this.files[0];
+
+            const box =
+                document.getElementById(
+                    boxId
+                );
+
+            const img =
+                document.getElementById(
+                    imgId
+                );
+
+            if(!file){
+
+                box.style.display =
+                    "none";
+
+                return;
+
+            }
+
+            const reader =
+                new FileReader();
+
+            reader.onload =
+                e => {
+
+                    img.src =
+                        e.target.result;
+
+                    box.style.display =
+                        "block";
+
+                };
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+}
+
+wireImagePreview(
+    "d_image",
+    "d_previewBox",
+    "d_preview"
+);
+
+wireImagePreview(
+    "t_image",
+    "t_previewBox",
+    "t_preview"
+);
+
+
+/* =========================================================
+   ERROR HELPERS
+========================================================== */
+
+function showError(
+    id,
+    message
+){
+
+    const box =
+        document.getElementById(id);
+
+    box.textContent =
+        message;
+
+    box.style.display =
+        "block";
+
+}
+
+function hideError(id){
+
+    document.getElementById(
+        id
+    ).style.display = "none";
+
+}
+
+function extractErrorMessage(detail){
+
+    if(!detail)
+        return "Something went wrong. Please try again.";
+
+    if(typeof detail === "string")
+        return detail;
+
+    if(detail.error)
+        return detail.error;
+
+    if(Array.isArray(detail))
+
+        return detail
+            .map(
+                d =>
+                    d.msg ||
+                    JSON.stringify(d)
+            )
+            .join(", ");
+
+    return "Something went wrong. Please try again.";
+
+}
+
+
+/* =========================================================
+   DIAGNOSIS
+========================================================== */
+
+document
+.getElementById("diagnosisForm")
+.addEventListener(
+    "submit",
+    async function(event){
+
+        event.preventDefault();
+
+        hideError("d_error");
+
+        const crop =
+            document.getElementById(
+                "d_crop"
+            ).value;
+
+        const location =
+            document.getElementById(
+                "d_location"
+            ).value;
+
+        const language =
+            document.getElementById(
+                "d_lang"
+            ).value;
+
+        const imageFile =
+            document.getElementById(
+                "d_image"
+            ).files[0];
+
+        if(
+            !crop ||
+            !location ||
+            !imageFile
+        ){
+
+            showError(
+                "d_error",
+                "Please select a crop, enter a location, and upload a photo."
+            );
+
+            return;
+
+        }
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "image",
+            imageFile
+        );
+
+        formData.append(
+            "crop_type",
+            crop
+        );
+
+        formData.append(
+            "location",
+            location
+        );
+
+        formData.append(
+            "language",
+            language
+        );
+
+        const btn =
+            document.getElementById(
+                "d_submitBtn"
+            );
+
+        btn.disabled = true;
+
+        btn.innerHTML =
+            `<span class="spinner"></span>Analyzing…`;
+
+        try{
+
+            const res =
+                await fetch(
+                    `${API_BASE}/disease/detect`,
+                    {
+                        method:"POST",
+                        body:formData
+                    }
+                );
+
+            const data =
+                await res.json();
+
+            if(!res.ok){
+
+                throw new Error(
+                    extractErrorMessage(
+                        data.detail
+                    )
+                );
+
+            }
+
+            renderDiagnosisResult(
+                data
+            );
+
+        }
+
+        catch(err){
+
+            showError(
+                "d_error",
+                err.message ||
+                "Could not reach the backend. Is it running at " +
+                API_BASE +
+                "?"
+            );
+
+        }
+
+        finally{
+
+            btn.disabled = false;
+
+            btn.innerHTML =
+                "Analyze Photo";
+
+        }
+
+    }
+);
+
+
+function renderDiagnosisResult(data){
+
+    const result =
+        document.getElementById(
+            "d_result"
+        );
+
+    const head =
+        document.getElementById(
+            "d_resultHead"
+        );
+
+    head.classList.remove(
+        "healthy",
+        "attention",
+        "uncertain"
+    );
+
+    let icon = "🌱";
+
+    if(
+        data.status ===
+        "Healthy"
+    ){
+
+        head.classList.add(
+            "healthy"
+        );
+
+        icon = "✅";
+
+    }
+
+    else if(
+        data.status ===
+        "Expert review recommended"
+    ){
+
+        head.classList.add(
+            "uncertain"
+        );
+
+        icon = "❓";
+
+    }
+
+    else{
+
+        head.classList.add(
+            "attention"
+        );
+
+        icon = "⚠️";
+
+    }
+
+    document.getElementById(
+        "d_resultIcon"
+    ).textContent = icon;
+
+    document.getElementById(
+        "d_cropTag"
+    ).textContent =
+        (data.crop || "").toUpperCase();
+
+    const severityEl =
+        document.getElementById(
+            "d_severity"
+        );
+
+    severityEl.classList.remove(
+        "low",
+        "unknown"
+    );
+
+    if(
+        data.status ===
+        "Healthy"
+    ){
+
+        severityEl.textContent =
+            "Low";
+
+        severityEl.classList.add(
+            "low"
+        );
+
+    }
+
+    else if(
+        data.status ===
+        "Expert review recommended"
+    ){
+
+        severityEl.textContent =
+            "Unclear — expert review needed";
+
+        severityEl.classList.add(
+            "unknown"
+        );
+
+    }
+
+    else if(data.confidence >= 75){
+
+        severityEl.textContent =
+            "Moderate to High";
+
+    }
+
+    else{
+
+        severityEl.textContent =
+            "Mild to Moderate";
+
+    }
+
+    document.getElementById(
+        "d_resultTitle"
+    ).textContent =
+        data.result;
+
+    document.getElementById(
+        "d_resultStatus"
+    ).textContent =
+        data.status;
+
+    document.getElementById(
+        "d_confFill"
+    ).style.width =
+        data.confidence + "%";
+
+    document.getElementById(
+        "d_confText"
+    ).textContent =
+        data.confidence + "%";
+
+    document.getElementById(
+        "d_message"
+    ).textContent =
+        data.message;
+
+    document.getElementById(
+        "d_advice"
+    ).textContent =
+        data.basic_advice;
+
+    const treatWrap =
+        document.getElementById(
+            "d_treatmentWrap"
+        );
+
+    if(data.treatment){
+
+        document.getElementById(
+            "d_treatment"
+        ).textContent =
+            data.treatment;
+
+        treatWrap.style.display =
+            "block";
+
+    }
+
+    else{
+
+        treatWrap.style.display =
+            "none";
+
+    }
+
+    const altsWrap =
+        document.getElementById(
+            "d_altsWrap"
+        );
+
+    const altsBox =
+        document.getElementById(
+            "d_alts"
+        );
+
+    altsBox.innerHTML = "";
+
+    if(
+        data.alternatives &&
+        data.alternatives.length
+    ){
+
+        data.alternatives.forEach(
+            alt => {
+
+                const chip =
+                    document.createElement(
+                        "span"
+                    );
+
+                chip.className =
+                    "chip";
+
+                chip.textContent =
+                    `${alt.label} — ${alt.confidence}%`;
+
+                altsBox.appendChild(
+                    chip
+                );
+
+            }
+        );
+
+        altsWrap.style.display =
+            "block";
+
+    }
+
+    else{
+
+        altsWrap.style.display =
+            "none";
+
+    }
+
+    const thumb =
+        document.getElementById(
+            "d_thumb"
+        );
+
+    thumb.src =
+        `${API_BASE}/${data.image_path}`;
+
+    thumb.style.display =
+        "block";
+
+    result.style.display =
+        "block";
+
+    result.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+    });
+
+}
+
+
+function resetDiagnosis(){
+
+    document.getElementById(
+        "diagnosisForm"
+    ).reset();
+
+    document.getElementById(
+        "d_previewBox"
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        "d_result"
+    ).style.display =
+        "none";
+
+    hideError("d_error");
+
+}
+
+
+/* =========================================================
+   WEATHER & RISK
+========================================================== */
+
+let manualCoords = null;
+
+function useMyLocation(){
+
+    if(!navigator.geolocation){
+
+        showError(
+            "w_error",
+            "Geolocation isn't available in this browser."
+        );
+
+        return;
+
+    }
+
+    navigator.geolocation.getCurrentPosition(
+
+        pos => {
+
+            manualCoords = {
+
+                latitude:
+                    pos.coords.latitude,
+
+                longitude:
+                    pos.coords.longitude
+
+            };
+
+            document.getElementById(
+                "w_location"
+            ).value = "";
+
+            document.getElementById(
+                "w_location"
+            ).placeholder =
+                "Using your current location";
+
+            fetchWeather();
+
+        },
+
+        () =>
+            showError(
+                "w_error",
+                "Couldn't get your location — enter a location name instead."
+            )
+
+    );
+
+}
+
+
+async function fetchWeather(){
+
+    hideError("w_error");
+
+    const btn =
+        document.getElementById(
+            "w_fetchBtn"
+        );
+
+    const locationName =
+        document.getElementById(
+            "w_location"
+        ).value.trim();
+
+    const crop =
+        document.getElementById(
+            "w_crop"
+        ).value;
+
+    let query = "";
+
+    if(
+        manualCoords &&
+        !locationName
+    ){
+
+        query =
+            `latitude=${manualCoords.latitude}&longitude=${manualCoords.longitude}`;
+
+    }
+
+    else{
+
+        query =
+            `location_name=${encodeURIComponent(
+                locationName || "Jaipur"
+            )}`;
+
+        manualCoords = null;
+
+    }
+
+    btn.disabled = true;
+
+    btn.innerHTML =
+        `<span class="spinner"></span>Fetching…`;
+
+    try{
+
+        const riskUrl =
+            `${API_BASE}/weather/risk?crop=${encodeURIComponent(crop)}&${query}`;
+
+        const res =
+            await fetch(riskUrl);
+
+        const data =
+            await res.json();
+
+        if(!res.ok)
+
+            throw new Error(
+                extractErrorMessage(
+                    data.detail
+                )
+            );
+
+        renderWeatherRisk(data);
+
+    }
+
+    catch(err){
+
+        showError(
+            "w_error",
+            err.message ||
+            "Could not reach the backend. Is it running at " +
+            API_BASE +
+            "?"
+        );
+
+    }
+
+    finally{
+
+        btn.disabled = false;
+
+        btn.innerHTML =
+            "Get Weather & Risk";
+
+    }
+
+}
+
+
+function renderWeatherRisk(data){
+
+    document.getElementById(
+        "w_results"
+    ).style.display =
+        "block";
+
+    const grid =
+        document.getElementById(
+            "w_currentGrid"
+        );
+
+    const w =
+        data.weather;
+
+    grid.innerHTML = `
+
+        <div class="weatherStat">
+            <div class="val">
+                ${w.temperature}°C
+            </div>
+            <div class="lab">
+                Temperature
+            </div>
+        </div>
+
+        <div class="weatherStat">
+            <div class="val">
+                ${w.humidity}%
+            </div>
+            <div class="lab">
+                Humidity
+            </div>
+        </div>
+
+        <div class="weatherStat">
+            <div class="val">
+                ${w.rainfall} mm
+            </div>
+            <div class="lab">
+                Rainfall
+            </div>
+        </div>
+
+        <div class="weatherStat">
+            <div class="val">
+                ${w.wind_speed} km/h
+            </div>
+            <div class="lab">
+                Wind Speed
+            </div>
+        </div>
+
+    `;
+
+    fetchForecastOnly();
+
+    const risk =
+        data.risk;
+
+    const card =
+        document.getElementById(
+            "w_riskCard"
+        );
+
+    card.classList.remove(
+        "low",
+        "medium",
+        "high"
+    );
+
+    if(
+        risk.level ===
+        "High Risk"
+    )
+
+        card.classList.add(
+            "high"
+        );
+
+    else if(
+        risk.level ===
+        "Medium Risk"
+    )
+
+        card.classList.add(
+            "medium"
+        );
+
+    else
+
+        card.classList.add(
+            "low"
+        );
+
+    document.getElementById(
+        "w_riskLevel"
+    ).textContent =
+        `${risk.level} — ${data.crop}`;
+
+    document.getElementById(
+        "w_riskReason"
+    ).textContent =
+        risk.reason;
+
+    document.getElementById(
+        "w_riskAlert"
+    ).textContent =
+        risk.alert || "";
+
+    const threatsWrap =
+        document.getElementById(
+            "w_riskThreatsWrap"
+        );
+
+    const threatsList =
+        document.getElementById(
+            "w_riskThreats"
+        );
+
+    threatsList.innerHTML = "";
+
+    if(
+        risk.threats &&
+        risk.threats.length
+    ){
+
+        risk.threats.forEach(
+            t => {
+
+                const li =
+                    document.createElement(
+                        "li"
+                    );
+
+                li.textContent = t;
+
+                threatsList.appendChild(
+                    li
+                );
+
+            }
+        );
+
+        threatsWrap.style.display =
+            "block";
+
+    }
+
+    else{
+
+        threatsWrap.style.display =
+            "none";
+
+    }
+
+    const recsWrap =
+        document.getElementById(
+            "w_riskRecsWrap"
+        );
+
+    const recsList =
+        document.getElementById(
+            "w_riskRecs"
+        );
+
+    recsList.innerHTML = "";
+
+    if(
+        risk.recommendations &&
+        risk.recommendations.length
+    ){
+
+        risk.recommendations.forEach(
+            r => {
+
+                const li =
+                    document.createElement(
+                        "li"
+                    );
+
+                li.textContent = r;
+
+                recsList.appendChild(
+                    li
+                );
+
+            }
+        );
+
+        recsWrap.style.display =
+            "block";
+
+    }
+
+    else{
+
+        recsWrap.style.display =
+            "none";
+
+    }
+
+    const otherWrap =
+        document.getElementById(
+            "w_otherRisksWrap"
+        );
+
+    const otherBox =
+        document.getElementById(
+            "w_otherRisks"
+        );
+
+    otherBox.innerHTML = "";
+
+    if(
+        data.all_risks &&
+        data.all_risks.length > 1
+    ){
+
+        data.all_risks.forEach(
+            r => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+                div.style.marginBottom =
+                    "10px";
+
+                div.innerHTML =
+                    `<strong>${r.level}</strong> — ${r.reason}`;
+
+                otherBox.appendChild(
+                    div
+                );
+
+            }
+        );
+
+        otherWrap.style.display =
+            "block";
+
+    }
+
+    else{
+
+        otherWrap.style.display =
+            "none";
+
+    }
+
+}
+
+
+async function fetchForecastOnly(){
+
+    try{
+
+        const locationName =
+            document.getElementById(
+                "w_location"
+            ).value.trim();
+
+        let query =
+            manualCoords
+
+            ? `latitude=${manualCoords.latitude}&longitude=${manualCoords.longitude}`
+
+            : `location_name=${encodeURIComponent(
+                locationName || "Jaipur"
+            )}`;
+
+        const res =
+            await fetch(
+                `${API_BASE}/weather?${query}`
+            );
+
+        if(!res.ok)
+            return;
+
+        const data =
+            await res.json();
+
+        const forecastBox =
+            document.getElementById(
+                "w_forecast"
+            );
+
+        forecastBox.innerHTML = "";
+
+        data.forecast.forEach(
+            day => {
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+                card.className =
+                    "forecastCard";
+
+                card.innerHTML = `
+
+                    <div class="date">
+                        ${day.date}
+                    </div>
+
+                    <div>
+                        🌡️
+                        ${day.temperature_min ?? "-"}°
+                        –
+                        ${day.temperature}°C
+                    </div>
+
+                    <div>
+                        💧 Humidity:
+                        ${day.humidity}%
+                    </div>
+
+                    <div>
+                        🌧️ Rain:
+                        ${day.rainfall} mm
+                        ${
+                            day.precipitation_probability != null
+                            ? `(${day.precipitation_probability}% chance)`
+                            : ""
+                        }
+                    </div>
+
+                    <div>
+                        💨 Wind:
+                        ${day.wind_speed} km/h
+                    </div>
+
+                `;
+
+                forecastBox.appendChild(
+                    card
+                );
+
+            }
+        );
+
+    }
+
+    catch(err){
+
+        /* forecast is best-effort */
+
+    }
+
+}
+
+
+/* =========================================================
+   TICKETS
+========================================================== */
+
+function statusBadgeClass(status){
+
+    if(
+        status ===
+        "Needs Expert Attention"
+    )
+
+        return "urgent";
+
+    if(
+        status ===
+        "Pending Review"
+    )
+
+        return "pending";
+
+    if(
+        status ===
+        "Under Review"
+    )
+
+        return "underreview";
+
+    if(
+        status ===
+        "Resolved"
+    )
+
+        return "resolved";
+
+    return "other";
+
+}
+
+
+document
+.getElementById("ticketForm")
+.addEventListener(
+    "submit",
+    async function(event){
+
+        event.preventDefault();
+
+        hideError("t_error");
+
+        const crop =
+            document.getElementById(
+                "t_crop"
+            ).value;
+
+        const location =
+            document.getElementById(
+                "t_location"
+            ).value;
+
+        const language =
+            document.getElementById(
+                "t_lang"
+            ).value;
+
+        const description =
+            document.getElementById(
+                "t_desc"
+            ).value;
+
+        const imageFile =
+            document.getElementById(
+                "t_image"
+            ).files[0];
+
+        if(
+            !crop ||
+            !location ||
+            !description ||
+            !imageFile
+        ){
+
+            showError(
+                "t_error",
+                "Please fill in every field and attach a photo."
+            );
+
+            return;
+
+        }
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "image",
+            imageFile
+        );
+
+        formData.append(
+            "crop_type",
+            crop
+        );
+
+        formData.append(
+            "location",
+            location
+        );
+
+        formData.append(
+            "problem_description",
+            description
+        );
+
+        formData.append(
+            "language",
+            language
+        );
+
+        const btn =
+            document.getElementById(
+                "t_submitBtn"
+            );
+
+        btn.disabled = true;
+
+        btn.innerHTML =
+            `<span class="spinner"></span>Submitting…`;
+
+        try{
+
+            const res =
+                await fetch(
+                    `${API_BASE}/tickets`,
+                    {
+                        method:"POST",
+                        body:formData
+                    }
+                );
+
+            const data =
+                await res.json();
+
+            if(!res.ok)
+
+                throw new Error(
+                    extractErrorMessage(
+                        data.detail
+                    )
+                );
+
+            document.getElementById(
+                "t_confirmId"
+            ).textContent =
+                data.id;
+
+            const badge =
+                document.getElementById(
+                    "t_confirmBadge"
+                );
+
+            badge.innerHTML =
+                `<span class="statusBadge ${statusBadgeClass(data.status)}">${data.status}</span>`;
+
+            document.getElementById(
+                "t_confirmAI"
+            ).textContent =
+                data.ai_result
+
+                ? `${data.ai_result} (${Math.round(data.ai_confidence * 100)}% confidence)`
+
+                : "unavailable";
+
+            document.getElementById(
+                "t_confirm"
+            ).style.display =
+                "block";
+
+            document.getElementById(
+                "t_confirm"
+            ).scrollIntoView({
+                behavior:"smooth",
+                block:"center"
+            });
+
+        }
+
+        catch(err){
+
+            showError(
+                "t_error",
+                err.message ||
+                "Could not reach the backend. Is it running at " +
+                API_BASE +
+                "?"
+            );
+
+        }
+
+        finally{
+
+            btn.disabled = false;
+
+            btn.innerHTML =
+                "Submit Ticket";
+
+        }
+
+    }
+);
+
+
+function resetTicketForm(){
+
+    document.getElementById(
+        "ticketForm"
+    ).reset();
+
+    document.getElementById(
+        "t_previewBox"
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        "t_confirm"
+    ).style.display =
+        "none";
+
+    hideError("t_error");
+
+}
+
+
+async function trackTicket(){
+
+    hideError("track_error");
+
+    const id =
+        document.getElementById(
+            "track_id"
+        ).value.trim();
+
+    const detailBox =
+        document.getElementById(
+            "track_detail"
+        );
+
+    if(!id){
+
+        showError(
+            "track_error",
+            "Enter a ticket ID first."
+        );
+
+        return;
+
+    }
+
+    try{
+
+        const res =
+            await fetch(
+                `${API_BASE}/tickets/${id}`
+            );
+
+        const data =
+            await res.json();
+
+        if(!res.ok)
+
+            throw new Error(
+                extractErrorMessage(
+                    data.detail
+                )
+            );
+
+        detailBox.innerHTML =
+            renderTicketDetailHTML(
+                data
+            );
+
+        detailBox.style.display =
+            "block";
+
+    }
+
+    catch(err){
+
+        detailBox.style.display =
+            "none";
+
+        showError(
+            "track_error",
+            err.message ||
+            "Ticket not found."
+        );
+
+    }
+
+}
+
+
+function renderTicketDetailHTML(t){
+
+    return `
+
+        <div class="row1">
+
+            <strong>
+                Ticket #${t.id}
+            </strong>
+
+            <span
+                class="statusBadge ${statusBadgeClass(t.status)}">
+
+                ${t.status}
+
+            </span>
+
+        </div>
+
+
+        <p
+            style="
+            margin:8px 0;
+            font-size:14px;
+            ">
+
+            <strong>Crop:</strong>
+            ${t.crop_type}
+
+            &nbsp;
+
+            <strong>Location:</strong>
+            ${t.location}
+
+        </p>
+
+
+        <p
+            style="
+            margin-bottom:8px;
+            font-size:14px;
+            ">
+
+            <strong>Problem:</strong>
+            ${t.problem_description}
+
+        </p>
+
+
+        <p
+            style="
+            margin-bottom:8px;
+            font-size:13px;
+            color:var(--muted);
+            ">
+
+            AI pre-screen:
+            ${t.ai_result || "n/a"}
+
+            ${
+                t.ai_confidence != null
+                ? `(${Math.round(t.ai_confidence*100)}%)`
+                : ""
+            }
+
+        </p>
+
+
+        ${
+            t.expert_response
+
+            ? `<p style="font-size:14px;">
+                <strong>Expert response:</strong>
+                ${t.expert_response}
+               </p>`
+
+            : `<p style="
+                font-size:13px;
+                color:var(--muted);
+                ">
+                No expert response yet.
+               </p>`
+        }
+
+
+        <img
+            src="${API_BASE}/${t.image_path}"
+            style="
+            max-width:180px;
+            border-radius:12px;
+            margin-top:10px;
+            "
+            alt="Ticket photo">
+
+    `;
+
+}
+
+
+/* =========================================================
+   EXPERT DASHBOARD
+========================================================== */
+
+async function loadExpertTickets(){
+
+    hideError("e_error");
+
+    const status =
+        document.getElementById(
+            "e_status"
+        ).value;
+
+    const crop =
+        document.getElementById(
+            "e_crop"
+        ).value.trim();
+
+    const location =
+        document.getElementById(
+            "e_location"
+        ).value.trim();
+
+    const params =
+        new URLSearchParams();
+
+    if(status)
+        params.append(
+            "status",
+            status
+        );
+
+    if(crop)
+        params.append(
+            "crop",
+            crop
+        );
+
+    if(location)
+        params.append(
+            "location",
+            location
+        );
+
+    const list =
+        document.getElementById(
+            "e_list"
+        );
+
+    list.innerHTML = "";
+
+    try{
+
+        const res =
+            await fetch(
+                `${API_BASE}/tickets?${params.toString()}`
+            );
+
+        const data =
+            await res.json();
+
+        if(!res.ok)
+
+            throw new Error(
+                extractErrorMessage(
+                    data.detail
+                )
+            );
+
+        if(!data.length){
+
+            list.innerHTML =
+                `<p style="color:var(--muted); font-size:14px;">
+                    No tickets match these filters.
+                </p>`;
+
+            return;
+
+        }
+
+        data.forEach(t => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+            item.className =
+                "ticketItem";
+
+            item.innerHTML = `
+
+                <div class="row1">
+
+                    <strong>
+                        #${t.id} · ${t.crop_type}
+                    </strong>
+
+                    <span
+                        class="statusBadge ${statusBadgeClass(t.status)}">
+
+                        ${t.status}
+
+                    </span>
+
+                </div>
+
+
+                <div class="meta">
+
+                    ${t.location}
+                    ·
+                    ${new Date(
+                        t.created_at
+                    ).toLocaleString()}
+
+                </div>
+
+            `;
+
+            const detail =
+                document.createElement(
+                    "div"
+                );
+
+            detail.className =
+                "ticketDetail";
+
+            detail.innerHTML = `
+
+                ${renderTicketDetailHTML(t)}
+
+                <div
+                    class="formGroup"
+                    style="margin-top:14px;">
+
+                    <label>
+                        Update status
+                    </label>
+
+                    <select class="e_statusSelect">
+
+                        <option
+                            value="Pending Review"
+                            ${
+                                t.status ===
+                                "Pending Review"
+                                ? "selected"
+                                : ""
+                            }>
+
+                            Pending Review
+
+                        </option>
+
+                        <option
+                            value="Needs Expert Attention"
+                            ${
+                                t.status ===
+                                "Needs Expert Attention"
+                                ? "selected"
+                                : ""
+                            }>
+
+                            Needs Expert Attention
+
+                        </option>
+
+                        <option
+                            value="Under Review"
+                            ${
+                                t.status ===
+                                "Under Review"
+                                ? "selected"
+                                : ""
+                            }>
+
+                            Under Review
+
+                        </option>
+
+                        <option
+                            value="Resolved"
+                            ${
+                                t.status ===
+                                "Resolved"
+                                ? "selected"
+                                : ""
+                            }>
+
+                            Resolved
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="formGroup">
+
+                    <label>
+                        Expert response
+                    </label>
+
+                    <textarea
+                        class="e_responseText"
+                        placeholder="Write guidance for the farmer…">${t.expert_response || ""}</textarea>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn primaryBtn e_saveBtn">
+
+                    Save Update
+
+                </button>
+
+
+                <div
+                    class="errorBox e_saveError">
+                </div>
+
+            `;
+
+            item.appendChild(
+                detail
+            );
+
+            item.querySelector(
+                ".row1"
+            ).addEventListener(
+                "click",
+                () => {
+
+                    detail.style.display =
+                        detail.style.display ===
+                        "block"
+                        ? "none"
+                        : "block";
+
+                }
+            );
+
+            detail.querySelector(
+                ".e_saveBtn"
+            ).addEventListener(
+                "click",
+                async (ev) => {
+
+                    ev.stopPropagation();
+
+                    await updateTicket(
+                        t.id,
+                        detail
+                    );
+
+                }
+            );
+
+            list.appendChild(
+                item
+            );
+
+        });
+
+    }
+
+    catch(err){
+
+        showError(
+            "e_error",
+            err.message ||
+            "Could not reach the backend. Is it running at " +
+            API_BASE +
+            "?"
+        );
+
+    }
+
+}
+
+
+async function updateTicket(
+    id,
+    detailEl
+){
+
+    const status =
+        detailEl.querySelector(
+            ".e_statusSelect"
+        ).value;
+
+    const expertResponse =
+        detailEl.querySelector(
+            ".e_responseText"
+        ).value;
+
+    const errBox =
+        detailEl.querySelector(
+            ".e_saveError"
+        );
+
+    errBox.style.display =
+        "none";
+
+    try{
+
+        const res =
+            await fetch(
+                `${API_BASE}/tickets/${id}`,
+                {
+                    method:"PUT",
+
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:JSON.stringify({
+                        status,
+                        expert_response:
+                            expertResponse
+                    })
+                }
+            );
+
+        const data =
+            await res.json();
+
+        if(!res.ok)
+
+            throw new Error(
+                extractErrorMessage(
+                    data.detail
+                )
+            );
+
+        loadExpertTickets();
+
+    }
+
+    catch(err){
+
+        errBox.textContent =
+            err.message ||
+            "Could not save this update.";
+
+        errBox.style.display =
+            "block";
+
+    }
+
+}
+
+
+/* =========================================================
+   BOOT
+========================================================== */
+
+checkHealth();
+
+loadLanguages();
+
+</script>
+
+</body>
+</html>
